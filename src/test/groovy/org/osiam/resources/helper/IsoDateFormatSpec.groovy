@@ -49,7 +49,7 @@ class IsoDateFormatSpec extends Specification {
         def created = dateTimeFormatter.print(date)
 
         def user = new User.Builder("username").setMeta(new Meta.Builder(actualDate, null).build()).build()
-        def scimSearchResult = new SCIMSearchResult([user] as List, 23, 100, 0, ["urn:scim:schemas:core:1.0"] as Set)
+        def scimSearchResult = new SCIMSearchResult([user] as List, 23, 100, 0, ["urn:ietf:params:scim:schemas:core:2.0"] as Set)
 
         when:
         def result = userController.searchWithGet(servletRequestMock)
@@ -62,6 +62,6 @@ class IsoDateFormatSpec extends Specification {
         result.getItemsPerPage() == 100
         result.getStartIndex() == 0
         result.getTotalResults() == 23
-        result.getSchemas() == ["urn:scim:schemas:core:1.0"] as Set
+        result.getSchemas() == ["urn:ietf:params:scim:schemas:core:2.0"] as Set
     }
 }

@@ -48,7 +48,7 @@ class ShowComplexAttributeFilterSpec extends Specification {
         def created = dateTimeFormatter.print(date)
 
         def user = new User.Builder("username").setMeta(new Meta.Builder(actualDate, null).build()).build()
-        def scimSearchResult = new SCIMSearchResult([user] as List, 23, 100, 0, ["urn:scim:schemas:core:2.0:User"] as Set)
+        def scimSearchResult = new SCIMSearchResult([user] as List, 23, 100, 0, [Constants.USER_CORE_SCHEMA] as Set)
         when:
         def result = underTest.searchWithPost(servletRequestMock)
 
@@ -60,6 +60,6 @@ class ShowComplexAttributeFilterSpec extends Specification {
         result.getItemsPerPage() == 100
         result.getStartIndex() == 0
         result.getTotalResults() == 23
-        result.getSchemas() == ["urn:scim:schemas:core:2.0:User"] as Set
+        result.getSchemas() == [Constants.USER_CORE_SCHEMA] as Set
     }
 }
