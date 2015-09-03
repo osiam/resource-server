@@ -40,6 +40,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.osiam.resources.scim.MemberRef.Type;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -104,6 +105,8 @@ public abstract class ResourceEntity {
     }
 
     public abstract String getDisplayName();
+
+    public abstract Type getType();
 
     /**
      * Update the last modified date for this entity.
