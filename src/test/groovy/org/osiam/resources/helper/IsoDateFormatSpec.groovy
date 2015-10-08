@@ -27,6 +27,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 import org.osiam.resources.controller.UserController
 import org.osiam.resources.provisioning.SCIMUserProvisioning
+import org.osiam.resources.scim.Constants
 import org.osiam.resources.scim.Meta
 import org.osiam.resources.scim.SCIMSearchResult
 import org.osiam.resources.scim.User
@@ -57,7 +58,7 @@ class IsoDateFormatSpec extends Specification {
         2 * servletRequestMock.getParameter("attributes") >> "meta.created"
         1 * provisioning.search(_, _, _, _, _) >> scimSearchResult
 
-        result.getResources() == [[meta: [created: created], schemas: ['urn:scim:schemas:core:2.0:User']]] as List
+        result.getResources() == [[meta: [created: created], schemas: [Constants.USER_CORE_SCHEMA]]] as List
         result.getItemsPerPage() == 100
         result.getStartIndex() == 0
         result.getTotalResults() == 23

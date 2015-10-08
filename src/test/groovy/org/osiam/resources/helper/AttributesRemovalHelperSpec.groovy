@@ -25,6 +25,7 @@ package org.osiam.resources.helper
 
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
+import org.osiam.resources.scim.Constants
 import org.osiam.resources.scim.Meta
 import org.osiam.resources.scim.SCIMSearchResult
 import org.osiam.resources.scim.User
@@ -132,7 +133,7 @@ class AttributesRemovalHelperSpec extends Specification {
         result.startIndex == 1
         result.itemsPerPage == 23
         result.totalResults == 1
-        result.getResources() == [[meta: [created: created], schemas: ['urn:scim:schemas:core:2.0:User']]] as List
+        result.getResources() == [[meta: [created: created], schemas: [Constants.USER_CORE_SCHEMA]]] as List
         result.getSchemas() == [
                 'urn:scim:schemas:core:2.0:User'] as Set
     }
