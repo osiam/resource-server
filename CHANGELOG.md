@@ -7,6 +7,11 @@
 - JDBC connection pooling
 - Set GroupRefType in GroupConverter
 
+### Changes
+
+- Increase timeouts for connections to auth-server
+- Increase maximum number of parallel connections to auth-server
+
 ### Fixes
 
 - Only set `UserEntity#active` if value is not null

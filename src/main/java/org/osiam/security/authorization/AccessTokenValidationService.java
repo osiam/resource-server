@@ -23,10 +23,6 @@
 
 package org.osiam.security.authorization;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.osiam.client.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
@@ -43,11 +39,22 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class AccessTokenValidationService implements ResourceServerTokenServices {
 
     @Value("${org.osiam.auth-server.home}")
     private String authServerHome;
+
+    static {
+        OsiamConnector.setMaxConnections(40);
+        OsiamConnector.setMaxConnectionsPerRoute(40);
+        OsiamConnector.setReadTimeout(10000);
+        OsiamConnector.setConnectTimeout(5000);
+    }
 
     @Override
     public OAuth2Authentication loadAuthentication(String token) {
@@ -94,7 +101,7 @@ public class AccessTokenValidationService implements ResourceServerTokenServices
 
     /**
      * Revokes the access tokens of the user with the given ID.
-     * 
+     *
      * @param id
      *            the user ID
      * @param token
