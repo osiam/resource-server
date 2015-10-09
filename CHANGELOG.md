@@ -1,5 +1,27 @@
 # OSIAM resource server
 
+## 2.3 - Unreleased
+
+### Features
+
+- JDBC connection pooling
+- Set GroupRefType in GroupConverter
+
+### Fixes
+
+- Only set `UserEntity#active` if value is not null
+- Use correct Schema for SCIMSearchResult
+
+### Updates
+
+- OSIAM connector4java 1.7
+- MySQL JDBC driver 5.1.36
+- PostgreSQL JDBC driver 9.4-1203
+- Spring 4.1.7.RELEASE
+- AspectJ 1.8.7
+- Joda Time 2.8.2
+- Metrics Spring Integration 3.1.2
+
 ## 2.2 - 2015-06-18
 
 ### Changes
