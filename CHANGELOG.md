@@ -1,11 +1,11 @@
 # OSIAM resource server
 
-## 2.3 - Unreleased
+## 2.3 - 2015-10-09
 
 ### Features
 
 - JDBC connection pooling
-- Set GroupRefType in GroupConverter
+- Set MemberRef Type in GroupConverter
 
 ### Changes
 
