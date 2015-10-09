@@ -59,7 +59,7 @@
     <scm>
         <connection>scm:https://github.com/osiam/resource-server.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/osiam/resource-server.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>maintenance-2.x</tag>
     </scm>
 
     <distributionManagement>
