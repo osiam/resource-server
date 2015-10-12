@@ -34,7 +34,7 @@ class JsonInputValidatorSpec extends Specification {
 
     def jsonInputValidator = new JsonInputValidator()
     HttpServletRequest httpServletRequestMock
-    BufferedReader readerMock = Mock()
+    def readerMock = Mock(BufferedReader)
 
     def setup() {
         servletRequestWithMethod 'POST'
@@ -62,18 +62,6 @@ class JsonInputValidatorSpec extends Specification {
 
         then:
         thrown(IllegalArgumentException)
-    }
-
-    def 'missing mandatory schema declaration for user raises exception'() {
-        given:
-        def userJson = '{"userName" : "irrelevant"}'
-        readerMock.readLine() >>> [userJson, null]
-
-        when:
-        jsonInputValidator.validateJsonUser(httpServletRequestMock)
-
-        then:
-        thrown(JsonMappingException)
     }
 
     def 'using PATCH without userName field works'() {
