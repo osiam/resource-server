@@ -7,6 +7,7 @@
 - JDBC connection pooling
 - Set MemberRef Type in GroupConverter
 - Make connector properties configurable
+- Make JDBC pool properties configurable
 
 ### Changes
 

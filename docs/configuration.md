@@ -16,6 +16,10 @@ org.osiam.auth-server.connector.max-connections=40
 # Timeouts of connections to auth-server in milliseconds
 org.osiam.auth-server.connector.read-timeout-ms=10000
 org.osiam.auth-server.connector.connect-timeout-ms=5000
+
+# JDBC pool properties
+org.osiam.resource-server.db.maximum-pool-size=10
+org.osiam.resource-server.db.connection-timeout-ms=30000
 ```
 
 The example properties file can also be found on [GitHub](https://github.com/osiam/server/blob/master/resource-server/src/main/deploy/resource-server.properties).

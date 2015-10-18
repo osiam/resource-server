@@ -65,6 +65,12 @@ public class ResourceServer extends SpringBootServletInitializer {
     @Value("${org.osiam.resource-server.db.vendor}")
     private String databaseVendor;
 
+    @Value("${org.osiam.resource-server.db.maximum-pool-size:10}")
+    private int maximumPoolSize;
+
+    @Value("${org.osiam.resource-server.db.connection-timeout-ms:30000}")
+    private int connectionTimeoutMs;
+
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ResourceServer.class);
         application.setDefaultProperties(NAMING_STRATEGY);
@@ -99,6 +105,8 @@ public class ResourceServer extends SpringBootServletInitializer {
         hikariConfig.setJdbcUrl(databaseUrl);
         hikariConfig.setUsername(databaseUserName);
         hikariConfig.setPassword(databasePassword);
+        hikariConfig.setMaximumPoolSize(maximumPoolSize);
+        hikariConfig.setConnectionTimeout(connectionTimeoutMs);
         return new HikariDataSource(hikariConfig);
     }
 
