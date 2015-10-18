@@ -27,6 +27,7 @@ import org.osiam.client.OsiamConnector;
 import org.osiam.client.oauth.AccessToken;
 import org.osiam.client.oauth.Scope;
 import org.osiam.resources.scim.User;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,16 +45,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class AccessTokenValidationService implements ResourceServerTokenServices {
+public class AccessTokenValidationService implements ResourceServerTokenServices, InitializingBean {
 
     @Value("${org.osiam.auth-server.home}")
     private String authServerHome;
 
-    static {
-        OsiamConnector.setMaxConnections(40);
-        OsiamConnector.setMaxConnectionsPerRoute(40);
-        OsiamConnector.setReadTimeout(10000);
-        OsiamConnector.setConnectTimeout(5000);
+    @Value("${org.osiam.auth-server.connector.max-connections:40}")
+    private int maxConnections;
+
+    @Value("${org.osiam.auth-server.connector.read-timeout-ms:10000}")
+    private int readTimeout;
+
+    @Value("${org.osiam.auth-server.connector.connect-timeout-ms:5000}")
+    private int connectTimeout;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        OsiamConnector.setMaxConnections(maxConnections);
+        OsiamConnector.setMaxConnectionsPerRoute(maxConnections);
+        OsiamConnector.setReadTimeout(readTimeout);
+        OsiamConnector.setConnectTimeout(connectTimeout);
     }
 
     @Override
