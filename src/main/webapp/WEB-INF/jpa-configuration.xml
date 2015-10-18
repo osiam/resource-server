@@ -56,6 +56,10 @@
         <property name="driverClassName" value="${org.osiam.resource-server.db.driver}" />
         <property name="username" value="${org.osiam.resource-server.db.username}" />
         <property name="password" value="${org.osiam.resource-server.db.password}" />
+        <property name="connectionTimeout"
+                  value="${org.osiam.resource-server.db.connection-timeout-ms:30000}"/>
+        <property name="maximumPoolSize"
+                  value="${org.osiam.resource-server.db.maximum-pool-size:10}"/>
     </bean>
 
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
