@@ -45,34 +45,32 @@ import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
-public class AccessTokenValidationService implements ResourceServerTokenServices {
+public class AccessTokenValidationService implements ResourceServerTokenServices  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenValidationService.class);
 
-    private String authServerHome;
+    private final String authServerHome;
 
     private OsiamConnector connector;
 
-    static {
-        OsiamConnector.setMaxConnections(40);
-        OsiamConnector.setMaxConnectionsPerRoute(40);
-    }
-
     @Autowired
-    public AccessTokenValidationService(@Value("${org.osiam.auth-server.home}") String authServerHome) {
+    public AccessTokenValidationService(
+            @Value("${org.osiam.auth-server.home}") String authServerHome,
+            @Value("${org.osiam.auth-server.connector.max-connections:40}") int maxConnections,
+            @Value("${org.osiam.auth-server.connector.read-timeout-ms:10000}") int readTimeout,
+            @Value("${org.osiam.auth-server.connector.connect-timeout-ms:5000}") int connectTimeout
+    ) {
         this.authServerHome = authServerHome;
         this.connector = new OsiamConnector.Builder()
                 .setAuthServerEndpoint(authServerHome)
-                .withReadTimeout(10000)
-                .withConnectTimeout(5000)
+                .withReadTimeout(readTimeout)
+                .withConnectTimeout(connectTimeout)
                 .build();
+        OsiamConnector.setMaxConnections(maxConnections);
+        OsiamConnector.setMaxConnectionsPerRoute(maxConnections);
     }
 
     @Override
