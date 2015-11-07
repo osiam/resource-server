@@ -18,7 +18,6 @@
   `409 CONFLICT` status code.
 - Respond with `401 UNAUTHORIZED` when revoking or validating an access token
   fails because of invalid access token.
-- Remove support for old, method-based OAuth scopes
 - Remove configuration property `org.osiam.resource-server.db.dialect`
 - Remove self written profiling solution since we now use the [Metrics](https://github.com/dropwizard/metrics)
   framework. This removes the configuration property `org.osiam.resource-server.profiling`
