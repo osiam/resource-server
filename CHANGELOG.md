@@ -11,8 +11,19 @@
 
 ### Changes
 
-- Increase timeouts for connections to auth-server
-- Increase maximum number of parallel connections to auth-server
+- Increase default timeouts for connections to auth-server
+- Increase default maximum number of parallel connections to auth-server
+- Switch to Spring Boot
+- Refactor database schema
+
+    **Note:** Some fields in table `scim_extension_field` have been renamed:
+
+    - `extension_internal_id` becomes `extension`;
+    - `is_required` becomes `required`;
+
+    Update your SQL scripts, if you add SCIM 2 extensions via direct database
+    manipulation.
+
 - Produce a meaningful log message and respond with `503 TEMPORARILY UNAVAILABLE`
   instead of `409 CONFLICT` if the auth-server cannot be reached to validate or
   revoke an access token.
@@ -31,12 +42,10 @@
 
 ### Updates
 
-- OSIAM connector4java 1.7
-- MySQL JDBC driver 5.1.36
-- PostgreSQL JDBC driver 9.4-1203
-- Spring 4.1.7.RELEASE
+- OSIAM connector4java 1.8
+- MySQL JDBC driver 5.1.37
+- PostgreSQL JDBC driver 9.4-1205
 - AspectJ 1.8.7
-- Joda Time 2.8.2
 - Metrics Spring Integration 3.1.2
 
 ## 2.3 - 2015-10-09
