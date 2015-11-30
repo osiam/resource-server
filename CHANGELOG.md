@@ -1,8 +1,28 @@
 # OSIAM resource server
 
-## 3.0 - Unreleased
+## 2.5 - Unreleased
+
+### Features
+
+- JDBC connection pooling
+- Set MemberRef Type in GroupConverter
+- Make connector properties configurable
+- Make JDBC pool properties configurable
 
 ### Changes
+
+- Increase default timeouts for connections to auth-server
+- Increase default maximum number of parallel connections to auth-server
+- Switch to Spring Boot
+- Refactor database schema
+
+    **Note:** Some fields in table `scim_extension_field` have been renamed:
+
+    - `extension_internal_id` becomes `extension`;
+    - `is_required` becomes `required`;
+
+    Update your SQL scripts, if you add SCIM 2 extensions via direct database
+    manipulation.
 
 - Produce a meaningful log message and respond with `503 TEMPORARILY UNAVAILABLE`
   instead of `409 CONFLICT` if the auth-server cannot be reached to validate or
@@ -11,22 +31,9 @@
   `409 CONFLICT` status code.
 - Respond with `401 UNAUTHORIZED` when revoking or validating an access token
   fails because of invalid access token.
-- Remove support for old, method-based OAuth scopes
 - Remove configuration property `org.osiam.resource-server.db.dialect`
-- Remove self written profiling solution since we now use the [Metrics](https://github.com/dropwizard/metrics) 
-  framework. This removes the configuration property `org.osiam.resource-server.profiling` 
-
-## 2.3 - 2015-10-09
-
-### Features
-
-- JDBC connection pooling
-- Set MemberRef Type in GroupConverter
-
-### Changes
-
-- Increase timeouts for connections to auth-server
-- Increase maximum number of parallel connections to auth-server
+- Remove self written profiling solution since we now use the [Metrics](https://github.com/dropwizard/metrics)
+  framework. This removes the configuration property `org.osiam.resource-server.profiling`
 
 ### Fixes
 
@@ -35,13 +42,15 @@
 
 ### Updates
 
-- OSIAM connector4java 1.7
-- MySQL JDBC driver 5.1.36
-- PostgreSQL JDBC driver 9.4-1203
-- Spring 4.1.7.RELEASE
+- OSIAM connector4java 1.8
+- MySQL JDBC driver 5.1.37
+- PostgreSQL JDBC driver 9.4-1205
 - AspectJ 1.8.7
-- Joda Time 2.8.2
 - Metrics Spring Integration 3.1.2
+
+## 2.3 - 2015-10-09
+
+Revoked, see 2.5
 
 ## 2.2 - 2015-06-18
 
@@ -93,7 +102,7 @@ database schema updates powered by Flyway. See the
 
 ## 1.2 - 2014-09-30
 
-- [feature] Introduced an interface to get the extension definitions (/osiam/extension-definition) 
+- [feature] Introduced an interface to get the extension definitions (/osiam/extension-definition)
 
 ## 1.1 - 2014-09-19
 

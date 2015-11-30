@@ -20,7 +20,7 @@ class AccessTokenValidationServiceTest extends Specification {
     def rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
     def connector = Mock(OsiamConnector)
 
-    def accessTokenValidator = new AccessTokenValidationService(IRRELEVANT)
+    def accessTokenValidator = new AccessTokenValidationService(IRRELEVANT, 40, 10000, 5000)
 
     def setup() {
         ((AppenderAttachable<ILoggingEvent>) rootLogger).addAppender(appender)

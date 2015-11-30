@@ -1,36 +1,43 @@
 package org.osiam;
 
-import java.util.*;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
+import com.google.common.collect.ImmutableMap;
+import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
+import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.MigrationVersion;
+import org.osiam.security.authorization.AccessTokenValidationService;
+import org.osiam.security.authorization.OsiamMethodSecurityExpressionHandler;
+import org.osiam.security.helper.SSLRequestLoggingFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
+import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import javax.servlet.*;
-import javax.sql.*;
-
-import org.flywaydb.core.*;
-import org.flywaydb.core.api.*;
-import org.osiam.security.authorization.*;
-import org.osiam.security.helper.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.*;
-import org.springframework.boot.autoconfigure.*;
-import org.springframework.boot.builder.*;
-import org.springframework.boot.context.web.*;
-import org.springframework.context.annotation.*;
-import org.springframework.http.*;
-import org.springframework.security.authentication.encoding.*;
-import org.springframework.security.config.annotation.web.builders.*;
-import org.springframework.security.config.annotation.web.configuration.*;
-import org.springframework.security.oauth2.config.annotation.web.configuration.*;
-import org.springframework.security.oauth2.config.annotation.web.configurers.*;
-import org.springframework.security.oauth2.provider.error.*;
-import org.springframework.transaction.annotation.*;
-import org.springframework.web.filter.*;
-import org.springframework.web.servlet.config.annotation.*;
-
-import com.codahale.metrics.*;
-import com.codahale.metrics.jvm.*;
-import com.google.common.collect.*;
-import com.ryantenney.metrics.spring.config.annotation.*;
-import com.zaxxer.hikari.*;
+import javax.servlet.Filter;
+import javax.sql.DataSource;
+import java.util.Map;
 
 @SpringBootApplication
 @EnableWebMvc
@@ -57,6 +64,12 @@ public class ResourceServer extends SpringBootServletInitializer {
 
     @Value("${org.osiam.resource-server.db.vendor}")
     private String databaseVendor;
+
+    @Value("${org.osiam.resource-server.db.maximum-pool-size:10}")
+    private int maximumPoolSize;
+
+    @Value("${org.osiam.resource-server.db.connection-timeout-ms:30000}")
+    private int connectionTimeoutMs;
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ResourceServer.class);
@@ -92,6 +105,8 @@ public class ResourceServer extends SpringBootServletInitializer {
         hikariConfig.setJdbcUrl(databaseUrl);
         hikariConfig.setUsername(databaseUserName);
         hikariConfig.setPassword(databasePassword);
+        hikariConfig.setMaximumPoolSize(maximumPoolSize);
+        hikariConfig.setConnectionTimeout(connectionTimeoutMs);
         return new HikariDataSource(hikariConfig);
     }
 
@@ -134,13 +149,19 @@ public class ResourceServer extends SpringBootServletInitializer {
                     .accessDeniedHandler(oauthAccessDeniedHandler())
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/ServiceProviderConfigs").permitAll()
-                    .antMatchers("/me/**").access("#oauth2.hasScope('ADMIN') or #oauth2.hasScope('ME')")
-                    .antMatchers(HttpMethod.POST, "/Users/**").access("#oauth2.hasScope('ADMIN')")
-                    .regexMatchers(HttpMethod.GET, "/Users/?").access("#oauth2.hasScope('ADMIN')")
+                    .antMatchers("/ServiceProviderConfigs")
+                    .permitAll()
+                    .antMatchers("/me/**")
+                    .access("#osiam.hasScopeForHttpMethod() or #oauth2.hasScope('ADMIN') or #oauth2.hasScope('ME')")
+                    .antMatchers(HttpMethod.POST, "/Users/**")
+                    .access("#osiam.hasScopeForHttpMethod() or #oauth2.hasScope('ADMIN')")
+                    .regexMatchers(HttpMethod.GET, "/Users/?")
+                    .access("#osiam.hasScopeForHttpMethod() or #oauth2.hasScope('ADMIN')")
                     .antMatchers("/Users/**")
-                    .access("#oauth2.hasScope('ADMIN') or #oauth2.hasScope('ME') and #osiam.isOwnerOfResource()")
-                    .anyRequest().access("#oauth2.hasScope('ADMIN')");
+                    .access("#osiam.hasScopeForHttpMethod() or #oauth2.hasScope('ADMIN') or " +
+                            "#oauth2.hasScope('ME') and #osiam.isOwnerOfResource()")
+                    .anyRequest()
+                    .access("#osiam.hasScopeForHttpMethod() or #oauth2.hasScope('ADMIN')");
         }
 
         @Bean

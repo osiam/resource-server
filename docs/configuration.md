@@ -9,8 +9,17 @@ org.osiam.resource-server.home=http://localhost:8080/osiam-resource-server
 # ATTENTION: you have to set a random secret for the resource server client!
 #org.osiam.resource-server.client.secret=
 
-# OSIAM auth server configuration
+# OSIAM auth-server configuration
 org.osiam.auth-server.home=http://localhost:8080/osiam-auth-server
+# Maximum number of parallel connections to the auth-server
+org.osiam.auth-server.connector.max-connections=40
+# Timeouts of connections to auth-server in milliseconds
+org.osiam.auth-server.connector.read-timeout-ms=10000
+org.osiam.auth-server.connector.connect-timeout-ms=5000
+
+# JDBC pool properties
+org.osiam.resource-server.db.maximum-pool-size=10
+org.osiam.resource-server.db.connection-timeout-ms=30000
 ```
 
 The example properties file can also be found on [GitHub](https://github.com/osiam/server/blob/master/resource-server/src/main/deploy/resource-server.properties).
