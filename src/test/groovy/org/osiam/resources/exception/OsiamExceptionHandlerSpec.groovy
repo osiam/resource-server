@@ -100,7 +100,7 @@ class OsiamExceptionHandlerSpec extends Specification {
 
     def "should transform json property invalid error message to a more readable response"() {
         given:
-        def e = generate_wrong_json_exception('{"extId":"blubb"}', User)
+        def e = generate_wrong_json_exception('{"schemas":["irrelevant"], "extId":"blubb"}', User)
         when:
         def result = exceptionHandler.handleUnrecognizedProperty(e)
         then:
