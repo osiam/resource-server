@@ -1,19 +1,47 @@
 # OSIAM resource server
 
-## 2.5 - Unreleased
+## 2.5 - 2015-12-15
 
 ### Features
 
-- JDBC connection pooling
-- Set MemberRef Type in GroupConverter
-- Make connector properties configurable
-- Make JDBC pool properties configurable
+- Use JDBC connection pooling
+
+    By default the pool has a size of 10 and a timeout of 30s to acquire a connection.
+    These settings can be changed with the following configuration properties:
+
+    - `org.osiam.resource-server.db.maximum-pool-size`
+    - `org.osiam.resource-server.db.connection-timeout-ms`
+
+- Populate the `type` field of a `Group`'s members
+
+    Members of a `Group` have their `type` field set to either `User` or `Group`.
+
+- Make number of parallel connections to the auth-server configurable
+
+    The default is 40 and can be changed with the following configuration property:
+
+    - `org.osiam.auth-server.connector.max-connections`
+
+- Make timeouts of connections to auth-server configurable
+
+    By default the read timeout is set to 10000ms and the connect timeout to 5000ms.
+    These settings can be changed with the following configuration properties:
+
+    - `org.osiam.auth-server.connector.read-timeout-ms`
+    - `org.osiam.auth-server.connector.connect-timeout-ms`
 
 ### Changes
 
 - Increase default timeouts for connections to auth-server
+
+    By default the read timeout is set to 10000ms and the connect timeout to 5000ms.
+
 - Increase default maximum number of parallel connections to auth-server
+
+    The default is 40.
+
 - Switch to Spring Boot
+
 - Refactor database schema
 
     **Note:** Some fields in table `scim_extension_field` have been renamed:
@@ -27,18 +55,43 @@
 - Produce a meaningful log message and respond with `503 TEMPORARILY UNAVAILABLE`
   instead of `409 CONFLICT` if the auth-server cannot be reached to validate or
   revoke an access token.
+
 - All invalid search queries now respond with a `400 BAD REQUEST` instead of
   `409 CONFLICT` status code.
+
 - Respond with `401 UNAUTHORIZED` when revoking or validating an access token
   fails because of invalid access token.
+
 - Remove configuration property `org.osiam.resource-server.db.dialect`
+
 - Remove self written profiling solution since we now use the [Metrics](https://github.com/dropwizard/metrics)
   framework. This removes the configuration property `org.osiam.resource-server.profiling`
+
+- Make the generated errors SCIM compliant
+
+    Error responses look like this according to [Scim 2](http://tools.ietf.org/html/rfc7644):
+
+        {
+          "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+          "detail": "Resource 2819c223-7f76-453a-919d-413861904646 not found",
+          "status": "404"
+        }
+
 
 ### Fixes
 
 - Only set `UserEntity#active` if value is not null
-- Use correct Schema for SCIMSearchResult
+
+    Prevents a NPE when storing users that have no value for the `active` field.
+
+- Use correct schema for Scim resources
+
+    Affected resources and the changes are:
+
+    - `User`: `urn:scim:schemas:core:2.0:User` becomes `urn:ietf:params:scim:schemas:core:2.0:User`
+    - `Group`: `urn:scim:schemas:core:2.0:Group` becomes `urn:ietf:params:scim:schemas:core:2.0:Group`
+    - `ListResponse`: `urn:scim:schemas:core:2.0:User`/`urn:scim:schemas:core:2.0:Group` becomes `urn:ietf:params:scim:api:messages:2.0:ListResponse`
+    - `ServiceProviderConfig`: `urn:scim:schemas:core:2.0:ServiceProviderConfig` becomes `urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig`
 
 ### Updates
 
@@ -47,6 +100,10 @@
 - PostgreSQL JDBC driver 9.4-1205
 - AspectJ 1.8.7
 - Metrics Spring Integration 3.1.2
+
+## 2.4
+
+Skipped to synchronize OSIAM main version with versions of the core servers
 
 ## 2.3 - 2015-10-09
 
