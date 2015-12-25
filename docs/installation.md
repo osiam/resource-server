@@ -47,30 +47,23 @@ least one running under the tomcat7 user:
     postgres 19930  0.0  0.0  47620  2372 ?        Ss   10:54   0:00 postgres: autovacuum launcher process
     postgres 19931  0.0  0.0  17388  1344 ?        Ss   10:54   0:00 postgres: stats collector process
 
-We recommend to choose the latest OSIAM release version. You can easily download
-the distribution as .zip or .tar.gz file here:
+We recommend to choose the latest release version.
+You can easily download the resource-server distribution as .zip or .tar.gz file here:
 
-* Release Repository: http://maven-repo.evolvis.org/releases/org/osiam/osiam-distribution
+* https://github.com/osiam/osiam/releases/download/v<VERSION>/resource-server-<VERSION>-distribution.zip
+* https://github.com/osiam/osiam/releases/download/v<VERSION>/resource-server-<VERSION>-distribution.tar.gz
 
-This include the resource-server, auth-server, addon-self-administration and
-addon-administration, every project has it's own folder with the configuration
-and sql files.
+This includes the .war file and the configuration file.
 
-If you just want the use the resource-server, then download the server
-distribution without the addons here:
+First, you have to choose a folder for the configuration file.
+We recommend using `/etc/osiam` and will use this path throughout the examples.
+Then copy the configuration file inside the `configuration` folder to `/etc/osiam`.
 
-* Release Repository: http://maven-repo.evolvis.org/releases/org/osiam/resource-server
-
-Both distributions have in common, that the included projects are packed as .war
-files and a configuration folder. Before you start, you have to copy the files
-and folders inside the configuration folder to the shared loader of your
-application server, like described [here](#deployment-into-the-application-server).
-
-* GitHub Release Tags: https://github.com/osiam/resource-server/releases
-
-You can also download the `.war` files for the OSIAM resource-server:
-
-    $ wget http://maven-repo.evolvis.org/releases/org/osiam/resource-server/<VERSION>/resource-server-<VERSION>.war
+You can also download the `.war` file for the OSIAM resource-server:
+https://github.com/osiam/osiam/releases/download/v<VERSION>/resource-server-<VERSION>.war
+This way you have to fetch the example configuration file from [GitHub]
+(https://github.com/osiam/resource-server/tree/master/src/main/deploy).
+Copy the configuration file you have downloaded to `/etc/osiam`.
 
 ## Setup the application server
 
